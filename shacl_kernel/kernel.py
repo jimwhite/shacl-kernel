@@ -1,12 +1,10 @@
 """SHACL Kernel for Jupyter."""
 
 from ipykernel.kernelbase import Kernel
-from rdflib import Graph, Namespace, Literal
-from rdflib.namespace import RDF, RDFS, SH, XSD
+from rdflib import Graph
 from pyshacl import validate
 import sys
 import traceback
-from io import StringIO
 
 
 class SHACLKernel(Kernel):
