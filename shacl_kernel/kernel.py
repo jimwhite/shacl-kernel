@@ -90,8 +90,11 @@ class SHACLKernel(Kernel):
             return self._handle_magic_command(lines[0], '\n'.join(lines[1:]))
         
         # Default: treat as Turtle data and add to data graph
+        before_count = len(self.data_graph)
         self.data_graph.parse(data=code, format='turtle')
-        return f"Added {len(code.split())} triples to data graph. Total: {len(self.data_graph)} triples."
+        after_count = len(self.data_graph)
+        added_count = after_count - before_count
+        return f"Added {added_count} triples to data graph. Total: {after_count} triples."
 
     def _handle_magic_command(self, magic_line, content):
         """Handle magic commands."""
