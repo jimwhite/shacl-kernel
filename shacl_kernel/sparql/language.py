@@ -101,7 +101,7 @@ BuiltInCall ->
 | isIRI ( Expression ) 
 | isURI ( Expression ) 
 | isBLANK ( Expression ) 
-| isLITERAL ( Expression )' 
+| isLITERAL ( Expression )
 | REGEX ( Expression , Expression , ... )''',
 
     'ORDER' : 

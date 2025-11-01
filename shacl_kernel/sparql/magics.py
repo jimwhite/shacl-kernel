@@ -18,7 +18,7 @@ from .constants import DEFAULT_TEXT_LANG
 from .utils import KrnlException, is_collection
 
 
-# Maximum number of nestes magic files
+# Maximum number of nested magic files
 MAX_RECURSE = 10
 
 
@@ -59,7 +59,7 @@ MAGIC_HELP = ('Available magics:\n' +
 
 def split_lines(buf):
     '''
-    Split a buffer in lines, skipping emtpy lines and commend lines, and
+    Split a buffer in lines, skipping empty lines and comment lines, and
     stripping whitespace at the beginning or end of lines
     '''
     return [line for line in map(lambda x: x.strip(), buf.split('\n'))

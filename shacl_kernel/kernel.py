@@ -14,6 +14,13 @@ from .sparql.magics import split_lines, process_magic, MAGICS, MAGIC_HELP
 from .sparql.language import sparql_names, sparql_help
 from .sparql.utils import data_msg
 
+# SHACL-specific magic commands
+SHACL_MAGICS = ['%data', '%shapes', '%validate', '%clear', '%show', '%help']
+
+# SPARQL query keywords for detection
+SPARQL_QUERY_KEYWORDS = ['SELECT', 'CONSTRUCT', 'ASK', 'DESCRIBE', 
+                         'INSERT', 'DELETE', 'LOAD', 'CLEAR', 'DROP', 'CREATE']
+
 
 def is_magic(token, token_start, buf):
     """
@@ -108,7 +115,7 @@ class SHACLKernel(Kernel):
                     if line[0] != '%':
                         break
                     # Separate SHACL and SPARQL magics
-                    if line.lower().startswith(('%data', '%shapes', '%validate', '%clear', '%show', '%help')):
+                    if any(line.lower().startswith(cmd) for cmd in SHACL_MAGICS):
                         shacl_magic_lines.append(line)
                     else:
                         sparql_magic_lines.append(line)
@@ -173,9 +180,7 @@ class SHACLKernel(Kernel):
     def _is_sparql_query(self, code):
         """Check if code looks like a SPARQL query."""
         code_upper = code.upper().strip()
-        sparql_keywords = ['SELECT', 'CONSTRUCT', 'ASK', 'DESCRIBE', 
-                          'INSERT', 'DELETE', 'LOAD', 'CLEAR', 'DROP', 'CREATE']
-        return any(code_upper.startswith(kw) for kw in sparql_keywords)
+        return any(code_upper.startswith(kw) for kw in SPARQL_QUERY_KEYWORDS)
 
     def _send_ok(self, data):
         """Send a successful response."""
@@ -342,8 +347,7 @@ Usage:
         
         if is_magic(token, start, code):
             # Complete magic commands (both SHACL and SPARQL)
-            shacl_magics = ['%data', '%shapes', '%validate', '%show', '%clear', '%help']
-            all_magics = shacl_magics + list(MAGICS.keys())
+            all_magics = SHACL_MAGICS + list(MAGICS.keys())
             matches = [k for k in all_magics if k.startswith(tkn_low)]
         else:
             # Complete SPARQL keywords
