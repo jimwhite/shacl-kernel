@@ -21,6 +21,7 @@ setup(
         'ipykernel>=6.0.0',
         'rdflib>=6.0.0',
         'pyshacl>=0.20.0',
+        'SPARQLWrapper>=2.0.0',
     ],
     extras_require={
         'dev': [

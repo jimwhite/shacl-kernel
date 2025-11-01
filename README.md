@@ -1,6 +1,6 @@
 # SHACL Kernel
 
-A Jupyter kernel for SHACL (Shapes Constraint Language) that enables interactive validation and exploration of RDF data using SHACL constraints.
+A Jupyter kernel for SHACL (Shapes Constraint Language) that enables interactive validation and exploration of RDF data using SHACL constraints, with integrated SPARQL query support.
 
 ## Features
 
@@ -8,7 +8,14 @@ A Jupyter kernel for SHACL (Shapes Constraint Language) that enables interactive
 - Support for loading data and shapes graphs
 - Built on `ipykernel.kernelbase.Kernel` base class
 - Magic commands for graph management and validation
+- **Integrated SPARQL endpoint querying** (from [sparql-kernel](https://github.com/paulovn/sparql-kernel))
+- **Comprehensive SPARQL magic commands** for endpoint configuration and query control
 - Turtle format support for RDF data
+- Multiple result display formats (table, raw, diagram)
+
+## Attribution
+
+This kernel integrates SPARQL functionality from the [SPARQL kernel project](https://github.com/paulovn/sparql-kernel) by Paulo Villegas, licensed under the 3-clause BSD License. See the NOTICE file for complete attribution details.
 
 ## Installation
 
@@ -50,12 +57,34 @@ After installation, you can create a new notebook with the SHACL kernel in Jupyt
 
 The SHACL kernel supports the following magic commands:
 
+#### SHACL Commands
+
 - `%data` - Load data graph (Turtle format)
 - `%shapes` - Load shapes graph (Turtle format)
 - `%validate` - Validate data against shapes
 - `%show` - Show current graphs
 - `%clear` - Clear all graphs
-- `%help` - Show help message
+- `%help` - Show comprehensive help message
+
+#### SPARQL Commands
+
+The kernel includes full SPARQL support via magic commands from the sparql-kernel project:
+
+- `%endpoint <url>` - Set SPARQL endpoint (**REQUIRED** for SPARQL queries)
+- `%auth <method> <user> <password>` - Set HTTP authentication (basic/digest)
+- `%qparam <name> [<value>]` - Add or delete a custom query parameter
+- `%http_header <name> [<value>]` - Add or delete an HTTP header
+- `%prefix <name> [<uri>]` - Set or delete a URI prefix for all queries
+- `%header <string> | OFF` - Add or delete a SPARQL header line
+- `%graph <uri>` - Set default graph for queries
+- `%format JSON | N3 | XML | default | any | none` - Set result format
+- `%display raw | table [withtypes] | diagram [svg|png]` - Set display format
+- `%lang <lang> [...] | default | all` - Set preferred language(s) for labels
+- `%show <n> | all` - Set maximum number of results shown
+- `%outfile <filename> | off` - Save raw output to a file
+- `%log <level>` - Set logging level (critical|error|warning|info|debug)
+- `%method get | post` - Set HTTP method
+- `%lsmagics` - List all available magic commands
 
 ### Example
 
@@ -96,6 +125,22 @@ ex:PersonShape a sh:NodeShape ;
 %validate
 ```
 
+### SPARQL Query Example
+
+```sparql
+# Set endpoint for DBpedia
+%endpoint https://dbpedia.org/sparql
+
+# Query for famous scientists
+SELECT ?person ?name ?birthDate WHERE {
+  ?person a dbo:Scientist ;
+          rdfs:label ?name ;
+          dbo:birthDate ?birthDate .
+  FILTER (lang(?name) = 'en')
+}
+LIMIT 10
+```
+
 ## Architecture
 
 The SHACL kernel is built on top of:
@@ -103,6 +148,7 @@ The SHACL kernel is built on top of:
 - **ipykernel**: Provides the `KernelBase` class for Jupyter kernel implementation
 - **rdflib**: RDF graph parsing and manipulation
 - **pyshacl**: SHACL validation engine
+- **SPARQLWrapper**: SPARQL endpoint communication (from sparql-kernel)
 
 The kernel maintains two separate RDF graphs:
 - **Data graph**: Stores the RDF data to be validated
